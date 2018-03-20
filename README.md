@@ -17,9 +17,9 @@ Parameters:
 3. Folder with noise files
 4. Filename extension of noise files
 5. Number of files to generate
-6. Time periods between speech in generated files:
-    * x
-    * rbeta|rgamma|rnorm|runif x y
+6. Time periods between speech:
+    * Constant: `x`
+    * Generated from distribution: `rbeta|rgamma|rnorm|runif x y`
 7. SNR in dB
 
 Geometrically Adaptive Energy Threshold Method
