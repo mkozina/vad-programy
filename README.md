@@ -22,6 +22,8 @@ Parameters:
     * Generated from distribution: `rbeta|rgamma|rnorm|runif x y`
 7. SNR in dB
 
+Example commands with descriptions in `test_data_generator/examples.sh`
+
 Geometrically Adaptive Energy Threshold Method
 ----------------------------------------------
 
