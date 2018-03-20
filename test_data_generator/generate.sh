@@ -146,7 +146,7 @@ do
 		else
 			adjv=$(echo "1.0" | awk '{printf "%.2f", $1}')
 		fi
-		vol=$(echo "$volamp $adjv" | awk '{printf "%.2f", 0.3*($2 / $1)}')
+		vol=$(echo "$volamp $adjv" | awk '{printf "%.2f", 0.8*($2 / $1)}')
 		sox -v $vol $1/proc/$f $1/proc/$f-tempv.wav
 
 		sox $1/proc/$f-tempv.wav $1/proc/$f-temp.wav highpass 10
@@ -210,7 +210,7 @@ do
 	else
 		adjv=$(echo "$snr" | awk '{printf "%.2f", 1 / $1}')
 	fi
-	vol=$(echo "$volamp $adjv" | awk '{printf "%.2f", 0.3*($2 / $1)}')
+	vol=$(echo "$volamp $adjv" | awk '{printf "%.2f", 0.8*($2 / $1)}')
 	sox -v $vol $3/$f $3/$f-tempv.wav
 
 	sox $3/$f-tempv.wav $3/$f-temp.wav highpass 10
