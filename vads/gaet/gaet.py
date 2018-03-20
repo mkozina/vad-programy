@@ -3,6 +3,7 @@ import math
 from array import *
 import numpy as np
 from scipy.io.wavfile import read
+from scipy import stats
 import scipy.linalg as linalg
 import matplotlib.pyplot as plt
 
@@ -33,8 +34,13 @@ if len(sys.argv) == 2:
 	# energy of each frame
 	energy = array('d')
 
+	# frame number (starts from 1)
+	frame_no = 0
+
 	# main loop over each frame
 	for i in range(0, len(signal[1]), 160):
+
+		frame_no += 1
 
 		# Geometrically Adaptive Energy Threshold (GAET) Method
 
@@ -55,6 +61,7 @@ if len(sys.argv) == 2:
 		# values of points B' and A' from Tanyer-Ozer
 		# Bprim_y = 1/5, 1/10 and 1/20
 		# Aprim_y = 4/5, 9/10 and 19/20
+		# these values are observed to be not very critical
 
 		Bprim_value = round((N-1)/5)
 		Aprim_value = round(4*((N-1)/5))
@@ -63,11 +70,6 @@ if len(sys.argv) == 2:
 		Bprim_y = y[Bprim_value]
 		Aprim_x = x[Aprim_value]
 		Aprim_y = y[Aprim_value]
-
-		# ??????????????????????????? - wygladzic
-		print("Aprim_y: ", Aprim_y, "Aprim_x: ", Aprim_x)
-		print("Bprim_y: ", Bprim_y, "Bprim_x: ", Bprim_x)
-		# ???????????????????????????
 
 		Aline_x = array('d')
 		Aline_y = array('d')
@@ -101,37 +103,61 @@ if len(sys.argv) == 2:
 
 # #########################
 		# point Q
+
 		seg_base = math.ceil(len(x)/2)
 		seg_first = 0
 		seg_second = seg_base
 		prev_seg_first = -1
 		prev_seg_second = -1
-#		while (seg_first != prev_seg_first) or (seg_second != prev_seg_second):
-#			if y[seg_first] <= aQline*x[seg_first] + bQline and y[seg_second] <= aQline*x[seg_second] + bQline:
-#				prev_seg_first = seg_first
-#				prev_seg_second =	seg_second
-#				seg_base = math.ceil(seg_base/2)
-#				seg_first = seg_second
-#				seg_second = seg_first + seg_base
-#				print('1')
-#			elif y[seg_first] <= aQline*x[seg_first] + bQline and y[seg_second] > aQline*x[seg_second] + bQline:
-#				prev_seg_first = seg_first
-#				prev_seg_second =	seg_second
-#				seg_base = math.ceil(seg_base/2)
-#				seg_second = seg_first + seg_base
-#				print('2')
-#			print("\nbase", seg_base)
-			#print("index first:", seg_first, ", index second:", seg_second)
-			#print("sig x first", x[seg_first], "sig y first", y[seg_first])
-			#print("sig x sec", x[seg_second], "sig y sec", y[seg_second])
-#		plt.plot(x[seg_first], y[seg_first], 'wo')
-#		plt.plot(x[seg_first], aQline*x[seg_first] + bQline, 'wo')
-#		plt.plot(x[seg_second], y[seg_second], 'wo')
-#		plt.plot(x[seg_second], aQline*x[seg_second] + bQline, 'wo')
+
+		while (seg_first != prev_seg_first) or (seg_second != prev_seg_second):
+
+			firstQ = aQline*x[seg_first] + bQline
+			secondQ = aQline*x[seg_second] + bQline
+
+			prev_seg_first = seg_first
+			prev_seg_second =	seg_second
+			seg_base = math.ceil(seg_base/2)
+
+			if y[seg_first] <= firstQ and y[seg_second] <= secondQ:
+				seg_first = seg_second
+				seg_second = seg_second + seg_base
+			elif y[seg_first] <= firstQ and y[seg_second] > secondQ:
+				seg_second = seg_first + seg_base
+
+		plt.plot(x[seg_first], y[seg_first], 'yo')
+		plt.plot(x[seg_first], aQline*x[seg_first] + bQline, 'mo')
+		plt.plot(x[seg_second], y[seg_second], 'yo')
+		plt.plot(x[seg_second], aQline*x[seg_second] + bQline, 'mo')
+
+		x_regress = array('d')
+		y_regress = array('d')
+
+		for k in range(0, 6):
+			x_regress.append( x[seg_first-k] )
+			y_regress.append( y[seg_first-k] )
+			plt.plot(x[seg_first-k], y[seg_first-k], 'yo')
+
+		for k in range(0, 6):
+			x_regress.append( x[seg_second+k] )
+			y_regress.append( y[seg_second+k] )
+			plt.plot(x[seg_second+k], y[seg_second+k], 'yo')
+
+		(slope, intercept, r_value, p_value, std_err) = stats.linregress(x_regress, y_regress)
+
+		Rline_x = array('d')
+		Rline_y = array('d')
+		for l in range(0, 12):
+			Rline_x.append( x_regress[l] )
+			Rline_y.append( slope*x_regress[l] + intercept )
+
+		plt.plot(Rline_x, Rline_y, 'm')
+
 # #########################
 
-		# plot only first 4 frames
-		if i <= 4800:
+		# plot only first 149 frames (ca 1505ms)
+		if i <= 23680:
+		#if frame_no == 135:
 
 			# plot GAET
 			plt.scatter(x, y)
@@ -139,13 +165,18 @@ if len(sys.argv) == 2:
 			plt.plot(Bline_x, Bline_y, 'g-')
 			plt.plot(Qprim_x, Qprim_y, 'ko')
 			plt.plot(Qline_x, Qline_y, 'k-')
+			plt.title("%s, frame: %i" % (filename, frame_no))
+			mng = plt.get_current_fig_manager()
+			mng.resize(*mng.window.maxsize())
 			plt.show()
 
 			# plot frame
-			plt.plot(signal_samples[0:N])
+			plt.plot(signal_samples[i:i+N])
 			plt.ylabel("Amplitude")
 			plt.xlabel("Time (samples)")
-			plt.title(filename)
+			plt.title("%s, frame: %i" % (filename, frame_no))
+			mng = plt.get_current_fig_manager()
+			mng.resize(*mng.window.maxsize())
 			plt.show()
 
 		# energy detector
