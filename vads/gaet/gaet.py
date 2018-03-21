@@ -125,11 +125,6 @@ if len(sys.argv) == 2:
 			elif y[seg_first] <= firstQ and y[seg_second] > secondQ:
 				seg_second = seg_first + seg_base
 
-		plt.plot(x[seg_first], y[seg_first], 'yo')
-		plt.plot(x[seg_first], aQline*x[seg_first] + bQline, 'mo')
-		plt.plot(x[seg_second], y[seg_second], 'yo')
-		plt.plot(x[seg_second], aQline*x[seg_second] + bQline, 'mo')
-
 		x_regress = array('d')
 		y_regress = array('d')
 
@@ -147,11 +142,25 @@ if len(sys.argv) == 2:
 
 		Rline_x = array('d')
 		Rline_y = array('d')
+
 		for l in range(0, 12):
 			Rline_x.append( x_regress[l] )
 			Rline_y.append( slope*x_regress[l] + intercept )
 
 		plt.plot(Rline_x, Rline_y, 'm')
+
+		# solve: y - ax = b
+		a = np.array([[1,-aQline],[1,-slope]])
+		b = np.array([bQline,intercept])
+		c = linalg.solve(a,b)
+		Q_x = c[1]
+		Q_y = c[0]
+
+		plt.plot(Q_x, Q_y, 'mo')
+
+		#safety coefficient alpha (0.8 < alpha < 1.2)
+		alpha = 1
+		noise_level = alpha*Q_x
 
 # #########################
 
