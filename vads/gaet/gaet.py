@@ -31,14 +31,16 @@ if len(sys.argv) == 2:
 	# frame size: 400 samples
 	# overlapping 15ms (240 samples)
 	N = 400
-	# energy of each frame
-	energy = array('d')
 
 	# frame number (starts from 1)
 	frame_no = 0
 
+	# energy of each frame
+	energy = array('d')
 	# noise level of each frame
 	noise_level = array('d')
+	# voice-active decision for each frame
+	vad_decision = array('d')
 
 	# main loop over each frame
 	for i in range(0, len(signal[1]), 160):
@@ -144,7 +146,7 @@ if len(sys.argv) == 2:
 				elif y[seg_first] <= firstQ and y[seg_second] > secondQ:
 					seg_second = seg_first + seg_base
 
-				if seg_second > 400-5:
+				if seg_second > (N-1)-5:
 					for t in range(1, 4-(ii-1)):
 						Q_x.append( x[len(x)-1] )
 						Q_y.append( y[len(y)-1] )
@@ -191,6 +193,17 @@ if len(sys.argv) == 2:
 		alpha = 1
 
 		noise_level.append( alpha*((Q_x[0]+Q_x[1]+Q_x[2])/3) )
+
+		vad_decision.append( 0 )
+		for m in range(0, N):
+			if x[m] > noise_level[frame_no-1]:
+				vad_decision[frame_no-1] += 1
+
+		vad_decision[frame_no-1] /= N
+		if vad_decision[frame_no-1] > 0.5:
+			vad_decision[frame_no-1] = 1
+		else:
+			vad_decision[frame_no-1] = 0
 
 		# plot only first 149 frames (ca 1505ms)
 		if i <= 23680:
