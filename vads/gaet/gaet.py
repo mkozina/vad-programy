@@ -32,10 +32,12 @@ if len(sys.argv) == 2:
 	# overlapping 15ms (240 samples)
 	N = 400
 
+	regress_neighborhood = 6
+
 	# frame number (starts from 1)
 	frame_no = 0
-	# which frame to plot
-	plot = 1572
+	# which frame to plot - 1575???
+	plot = 1575
 
 	# energy of each frame
 	energy = array('d')
@@ -150,7 +152,7 @@ if len(sys.argv) == 2:
 				elif y[seg_first] <= firstQ and y[seg_second] > secondQ:
 					seg_second = seg_first + seg_base
 
-				if seg_second > (N-1)-5:
+				if seg_second > N-1:
 					Q_x.append( x[len(x)-1] )
 					Q_y.append( y[len(y)-1] )
 					stop = "yes"
@@ -162,13 +164,13 @@ if len(sys.argv) == 2:
 			x_regress = array('d')
 			y_regress = array('d')
 
-			for k in range(0, 6):
+			for k in range(0, regress_neighborhood):
 				x_regress.append( x[seg_first-k] )
 				y_regress.append( y[seg_first-k] )
 				if plot != 0 and frame_no == plot:
 					plt.plot(x[seg_first-k], y[seg_first-k], 'yo')
 
-			for k in range(0, 6):
+			for k in range(0, regress_neighborhood):
 				x_regress.append( x[seg_second+k] )
 				y_regress.append( y[seg_second+k] )
 				if plot != 0 and frame_no == plot:
@@ -188,7 +190,7 @@ if len(sys.argv) == 2:
 				Rline_x = array('d')
 				Rline_y = array('d')
 
-				for l in range(0, 12):
+				for l in range(0, 2*regress_neighborhood):
 					Rline_x.append( x_regress[l] )
 					Rline_y.append( slope*x_regress[l] + intercept )
 
