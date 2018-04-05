@@ -34,6 +34,8 @@ if len(sys.argv) == 2:
 
 	# frame number (starts from 1)
 	frame_no = 0
+	# which frame to plot
+	plot = 1572
 
 	# energy of each frame
 	energy = array('d')
@@ -66,9 +68,9 @@ if len(sys.argv) == 2:
 		Q_x = array('d')
 		Q_y = array('d')
 
-		stop = "no"
-
 		for ii in range(1, 4):
+
+			stop = "no"
 
 			# values of points B' and A' from Tanyer-Ozer
 			# Bprim_y = 1/5, 1/10 and 1/20
@@ -90,13 +92,6 @@ if len(sys.argv) == 2:
 			Aprim_x = x[Aprim_value]
 			Aprim_y = y[Aprim_value]
 
-			Aline_x = array('d')
-			Aline_y = array('d')
-			Bline_x = array('d')
-			Bline_y = array('d')
-			Qline_x = array('d')
-			Qline_y = array('d')
-
 			aAline = aline(A_x, A_y, Aprim_x, Aprim_y)
 			bAline = bline(A_x, A_y, Aprim_x, Aprim_y)
 			aBline = aline(B_x, B_y, Bprim_x, Bprim_y)
@@ -112,18 +107,27 @@ if len(sys.argv) == 2:
 			aQline = aline(C_x, C_y, Qprim_x, Qprim_y)
 			bQline = bline(C_x, C_y, Qprim_x, Qprim_y)
 
-			for j in range(B_x, A_x+1):
-				Aline_x.append( j )
-				Aline_y.append( aAline*j + bAline )
-				Bline_x.append( j )
-				Bline_y.append( aBline*j + bBline )
-				Qline_x.append( j )
-				Qline_y.append( aQline*j + bQline )
+			if plot != 0 and frame_no == plot:
 
-			plt.plot(Aline_x, Aline_y, 'r-')
-			plt.plot(Bline_x, Bline_y, 'g-')
-			plt.plot(Qprim_x, Qprim_y, 'ko')
-			plt.plot(Qline_x, Qline_y, 'k-')
+				Aline_x = array('d')
+				Aline_y = array('d')
+				Bline_x = array('d')
+				Bline_y = array('d')
+				Qline_x = array('d')
+				Qline_y = array('d')
+
+				for j in range(B_x, A_x+1):
+					Aline_x.append( j )
+					Aline_y.append( aAline*j + bAline )
+					Bline_x.append( j )
+					Bline_y.append( aBline*j + bBline )
+					Qline_x.append( j )
+					Qline_y.append( aQline*j + bQline )
+
+				plt.plot(Aline_x, Aline_y, 'r-')
+				plt.plot(Bline_x, Bline_y, 'g-')
+				plt.plot(Qprim_x, Qprim_y, 'ko')
+				plt.plot(Qline_x, Qline_y, 'k-')
 
 			seg_base = math.ceil(len(x)/2)
 			seg_first = 0
@@ -147,14 +151,13 @@ if len(sys.argv) == 2:
 					seg_second = seg_first + seg_base
 
 				if seg_second > (N-1)-5:
-					for t in range(1, 4-(ii-1)):
-						Q_x.append( x[len(x)-1] )
-						Q_y.append( y[len(y)-1] )
+					Q_x.append( x[len(x)-1] )
+					Q_y.append( y[len(y)-1] )
 					stop = "yes"
 					break
 
 			if "yes" in stop:
-				break
+				continue
 
 			x_regress = array('d')
 			y_regress = array('d')
@@ -162,23 +165,16 @@ if len(sys.argv) == 2:
 			for k in range(0, 6):
 				x_regress.append( x[seg_first-k] )
 				y_regress.append( y[seg_first-k] )
-				plt.plot(x[seg_first-k], y[seg_first-k], 'yo')
+				if plot != 0 and frame_no == plot:
+					plt.plot(x[seg_first-k], y[seg_first-k], 'yo')
 
 			for k in range(0, 6):
 				x_regress.append( x[seg_second+k] )
 				y_regress.append( y[seg_second+k] )
-				plt.plot(x[seg_second+k], y[seg_second+k], 'yo')
+				if plot != 0 and frame_no == plot:
+					plt.plot(x[seg_second+k], y[seg_second+k], 'yo')
 
 			(slope, intercept, r_value, p_value, std_err) = stats.linregress(x_regress, y_regress)
-
-			Rline_x = array('d')
-			Rline_y = array('d')
-
-			for l in range(0, 12):
-				Rline_x.append( x_regress[l] )
-				Rline_y.append( slope*x_regress[l] + intercept )
-
-			plt.plot(Rline_x, Rline_y, 'm')
 
 			# solve: y - ax = b
 			a = np.array([[1,-aQline],[1,-slope]])
@@ -187,7 +183,17 @@ if len(sys.argv) == 2:
 			Q_x.append( c[1] )
 			Q_y.append( c[0] )
 
-			plt.plot(Q_x[ii-1], Q_y[ii-1], 'mo')
+			if plot != 0 and frame_no == plot:
+
+				Rline_x = array('d')
+				Rline_y = array('d')
+
+				for l in range(0, 12):
+					Rline_x.append( x_regress[l] )
+					Rline_y.append( slope*x_regress[l] + intercept )
+
+				plt.plot(Rline_x, Rline_y, 'm')
+				plt.plot(Q_x[ii-1], Q_y[ii-1], 'mo')
 
 		#safety coefficient (0.8 < alpha < 1.2)
 		alpha = 1
@@ -205,9 +211,11 @@ if len(sys.argv) == 2:
 		else:
 			vad_decision[frame_no-1] = 0
 
+		print(frame_no)
+
 		# plot only first 149 frames (ca 1505ms)
-		if i <= 23680:
-		#if frame_no == 135:
+		#if i <= 23680:
+		if plot != 0 and frame_no == plot:
 
 			# plot GAET
 			plt.scatter(x, y)
