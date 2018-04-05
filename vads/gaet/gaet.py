@@ -37,7 +37,7 @@ if len(sys.argv) == 2:
 	# frame number (starts from 1)
 	frame_no = 0
 	# which frame to plot - 1575???
-	plot = 1575
+	plot = 1574
 
 	# energy of each frame
 	energy = array('d')
@@ -152,7 +152,7 @@ if len(sys.argv) == 2:
 				elif y[seg_first] <= firstQ and y[seg_second] > secondQ:
 					seg_second = seg_first + seg_base
 
-				if seg_second > N-1:
+				if seg_second > (N-1)-(regress_neighborhood-1):
 					Q_x.append( x[len(x)-1] )
 					Q_y.append( y[len(y)-1] )
 					stop = "yes"
