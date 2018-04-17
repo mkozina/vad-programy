@@ -5,7 +5,6 @@ import numpy as np
 from scipy.io.wavfile import read
 from scipy import stats
 import scipy.linalg as linalg
-import matplotlib.pyplot as plt
 
 # calculate coefficient a of a linear function that passes through (x1,y1) and (x2,y2)
 def aline(x1, y1, x2, y2):
@@ -28,16 +27,20 @@ if len(sys.argv) == 2:
 	signal_samples = signal[1]
 	signal_samples = signal_samples.astype(np.int64)
 
+	filename = filename+".txt"
+	plot_file = open(filename, 'w')
+
 	# frame size: 400 samples
 	# overlapping 15ms (240 samples)
 	N = 400
+	s = str(N)
+	s = s+"\n"
+	plot_file.write(s)
 
 	regress_neighborhood = 6
 
 	# frame number (starts from 1)
 	frame_no = 0
-	# which frame to plot - 1575???
-	plot = 1574
 
 	# energy of each frame
 	energy = array('d')
@@ -50,6 +53,9 @@ if len(sys.argv) == 2:
 	for i in range(0, len(signal[1]), 160):
 
 		frame_no += 1
+		s = str(frame_no)
+		s = s+"\n"
+		plot_file.write(s)
 
 		# Geometrically Adaptive Energy Threshold (GAET) Method
 
@@ -102,34 +108,15 @@ if len(sys.argv) == 2:
 			# solve: y - ax = b
 			a = np.array([[1,-aAline],[1,-aBline]])
 			b = np.array([bAline,bBline])
-			c = linalg.solve(a,b)
+			try:
+				c = linalg.solve(a,b)
+			except np.linalg.linalg.LinAlgError:
+				vad_decision.append( -1 )
 			Qprim_x = c[1]
 			Qprim_y = c[0]
 
 			aQline = aline(C_x, C_y, Qprim_x, Qprim_y)
 			bQline = bline(C_x, C_y, Qprim_x, Qprim_y)
-
-			if plot != 0 and frame_no == plot:
-
-				Aline_x = array('d')
-				Aline_y = array('d')
-				Bline_x = array('d')
-				Bline_y = array('d')
-				Qline_x = array('d')
-				Qline_y = array('d')
-
-				for j in range(B_x, A_x+1):
-					Aline_x.append( j )
-					Aline_y.append( aAline*j + bAline )
-					Bline_x.append( j )
-					Bline_y.append( aBline*j + bBline )
-					Qline_x.append( j )
-					Qline_y.append( aQline*j + bQline )
-
-				plt.plot(Aline_x, Aline_y, 'r-')
-				plt.plot(Bline_x, Bline_y, 'g-')
-				plt.plot(Qprim_x, Qprim_y, 'ko')
-				plt.plot(Qline_x, Qline_y, 'k-')
 
 			seg_base = math.ceil(len(x)/2)
 			seg_first = 0
@@ -167,14 +154,10 @@ if len(sys.argv) == 2:
 			for k in range(0, regress_neighborhood):
 				x_regress.append( x[seg_first-k] )
 				y_regress.append( y[seg_first-k] )
-				if plot != 0 and frame_no == plot:
-					plt.plot(x[seg_first-k], y[seg_first-k], 'yo')
 
 			for k in range(0, regress_neighborhood):
 				x_regress.append( x[seg_second+k] )
 				y_regress.append( y[seg_second+k] )
-				if plot != 0 and frame_no == plot:
-					plt.plot(x[seg_second+k], y[seg_second+k], 'yo')
 
 			(slope, intercept, r_value, p_value, std_err) = stats.linregress(x_regress, y_regress)
 
@@ -184,18 +167,6 @@ if len(sys.argv) == 2:
 			c = linalg.solve(a,b)
 			Q_x.append( c[1] )
 			Q_y.append( c[0] )
-
-			if plot != 0 and frame_no == plot:
-
-				Rline_x = array('d')
-				Rline_y = array('d')
-
-				for l in range(0, 2*regress_neighborhood):
-					Rline_x.append( x_regress[l] )
-					Rline_y.append( slope*x_regress[l] + intercept )
-
-				plt.plot(Rline_x, Rline_y, 'm')
-				plt.plot(Q_x[ii-1], Q_y[ii-1], 'mo')
 
 		#safety coefficient (0.8 < alpha < 1.2)
 		alpha = 1
@@ -214,31 +185,13 @@ if len(sys.argv) == 2:
 			vad_decision[frame_no-1] = 0
 
 		print(frame_no)
-
-		# plot only first 149 frames (ca 1505ms)
-		#if i <= 23680:
-		if plot != 0 and frame_no == plot:
-
-			# plot GAET
-			plt.scatter(x, y)
-			plt.title("%s, frame: %i" % (filename, frame_no))
-			mng = plt.get_current_fig_manager()
-			mng.resize(*mng.window.maxsize())
-			plt.show()
-
-			# plot frame
-			plt.plot(signal_samples[i:i+N])
-			plt.axhline(y=noise_level[frame_no-1], color='m')
-			plt.ylabel("Amplitude")
-			plt.xlabel("Time (samples)")
-			plt.title("%s, frame: %i" % (filename, frame_no))
-			mng = plt.get_current_fig_manager()
-			mng.resize(*mng.window.maxsize())
-			plt.show()
+		print(vad_decision[frame_no-1])
 
 		# energy detector
 		# calculate energy of a frame
 		energy.append( sum(np.square(signal_samples[i:i+N])) )
+
+	plot_file.close()
 
 elif len(sys.argv) < 2:
 	print("You must enter filename as parameter!")
