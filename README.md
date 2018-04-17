@@ -34,3 +34,5 @@ Requirements:
 * Matplotlib 2.0.2
 
 Run `python3 gaet.py audiofile.wav` in `vads/gaet/`
+
+To see plots run `python3 plot.py plotfile.txt` in `vads/gaet/`
