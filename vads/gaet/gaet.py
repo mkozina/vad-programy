@@ -27,6 +27,7 @@ if len(sys.argv) == 2:
 	signal_samples = signal[1]
 	signal_samples = signal_samples.astype(np.int64)
 
+	# write plotting data to file
 	filename = filename+".txt"
 	plot_file = open(filename, 'w')
 
@@ -62,6 +63,8 @@ if len(sys.argv) == 2:
 		# Modified Amplitude Probability Distribution (MAPD)
 		y = np.arange(N) / (N-1)
 		x = np.sort( abs(signal_samples[i:i+N]) )
+		for item in range(len(x)):
+			plot_file.write("%i \n" % x[item])
 
 		# set point B to bottom left corner
 		B_x = x[0]
