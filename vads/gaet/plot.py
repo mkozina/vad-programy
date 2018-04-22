@@ -23,11 +23,11 @@ if len(sys.argv) == 2:
 	# x
 	x = array('I')
 	for i, line in enumerate(plot_file):
-		if i >= ((frame_no-1)*(N+1+42))+1 and i <= ((frame_no-1)*(N+1+42))+1+(N-1):
+		if i >= ((frame_no-1)*(N+1+48))+1 and i <= ((frame_no-1)*(N+1+48))+1+(N-1):
 			line_int = line.rstrip('\n')
 			line_int = int(line_int)
 			x.append( line_int )
-		elif i > ((frame_no-1)*(N+1+42))+1+(N-1):
+		elif i > ((frame_no-1)*(N+1+48))+1+(N-1):
 			break
 
 	B_x = x[0]
@@ -83,12 +83,20 @@ if len(sys.argv) == 2:
 			elif i == 11:
 				line_int = line.rstrip('\n')
 				line_int = float(line_int)
-				Q_x = line_int
+				slope = line_int
 			elif i == 12:
 				line_int = line.rstrip('\n')
 				line_int = float(line_int)
+				intercept = line_int
+			elif i == 13:
+				line_int = line.rstrip('\n')
+				line_int = float(line_int)
+				Q_x = line_int
+			elif i == 14:
+				line_int = line.rstrip('\n')
+				line_int = float(line_int)
 				Q_y = line_int
-			elif i > 12:
+			elif i > 14:
 				break
 
 		# lines that crosses A', B' and Q' points
@@ -115,16 +123,21 @@ if len(sys.argv) == 2:
 
 		# linear regression and Q point
 
+		x_regress = array('d')
+
 		for k in range(0, regress_neighborhood):
+			x_regress.append( x[seg_first-k] )
+			x_regress.append( x[seg_second+k] )
+
 			plt.plot(x[seg_first-k], y[seg_first-k], 'yo')
 			plt.plot(x[seg_second+k], y[seg_second+k], 'yo')
 
 		Rline_x = array('d')
 		Rline_y = array('d')
 
-#		for l in range(0, 2*regress_neighborhood):
-#			Rline_x.append( x_regress[l] )
-#			Rline_y.append( slope*x_regress[l] + intercept )
+		for l in range(0, 2*regress_neighborhood):
+			Rline_x.append( x_regress[l] )
+			Rline_y.append( slope*x_regress[l] + intercept )
 
 		plt.plot(Rline_x, Rline_y, 'm')
 		plt.plot(Q_x, Q_y, 'mo')
