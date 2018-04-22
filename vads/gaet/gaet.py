@@ -184,6 +184,9 @@ if len(sys.argv) == 2:
 			Q_x.append( c[1] )
 			Q_y.append( c[0] )
 
+			plot_file.write("%.15f \n" % c[1])
+			plot_file.write("%.15f \n" % c[0])
+
 		#safety coefficient (0.8 < alpha < 1.2)
 		alpha = 1
 
