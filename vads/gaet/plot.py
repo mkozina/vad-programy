@@ -1,4 +1,5 @@
 import sys
+from array import *
 import numpy as np
 import matplotlib.pyplot as plt
 
@@ -20,9 +21,12 @@ if len(sys.argv) == 2:
 	y = np.arange(N) / (N-1)
 
 	# x
+	x = array('I')
 	for i, line in enumerate(plot_file):
 		if i >= ((frame_no-1)*(N+1))+1 and i <= ((frame_no-1)*(N+1))+1+(N-1):
-			print(line)
+			line_int = line.rstrip('\n')
+			line_int = int (line_int)
+			x.append( line_int )
 
 #	if plot != 0 and frame_no == plot:
 
@@ -65,11 +69,11 @@ if len(sys.argv) == 2:
 #		plt.plot(Q_x[ii-1], Q_y[ii-1], 'mo')
 
 	# plot GAET
-#	plt.scatter(x, y)
+	plt.scatter(x, y)
 #	plt.title("%s, frame: %i" % (filename, frame_no))
 #	mng = plt.get_current_fig_manager()
 #	mng.resize(*mng.window.maxsize())
-#	plt.show()
+	plt.show()
 
 	# plot frame
 #	plt.plot(signal_samples[i:i+N])
