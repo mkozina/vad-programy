@@ -23,11 +23,11 @@ if len(sys.argv) == 2:
 	# x
 	x = array('I')
 	for i, line in enumerate(plot_file):
-		if i >= ((frame_no-1)*(N+1+27))+1 and i <= ((frame_no-1)*(N+1+27))+1+(N-1):
+		if i >= ((frame_no-1)*(N+1+36))+1 and i <= ((frame_no-1)*(N+1+36))+1+(N-1):
 			line_int = line.rstrip('\n')
 			line_int = int(line_int)
 			x.append( line_int )
-		elif i > ((frame_no-1)*(N+1+27))+1+(N-1):
+		elif i > ((frame_no-1)*(N+1+36))+1+(N-1):
 			break
 
 	# lines that crosses A', B' and Q' points
@@ -70,7 +70,19 @@ if len(sys.argv) == 2:
 				line_int = line.rstrip('\n')
 				line_int = float(line_int)
 				bQline = line_int
-			elif i > 7:
+			elif i == 8:
+				line_int = line.rstrip('\n')
+				line_int = int(line_int)
+				regress_neighborhood = line_int
+			elif i == 9:
+				line_int = line.rstrip('\n')
+				line_int = int(line_int)
+				seg_first = line_int
+			elif i == 10:
+				line_int = line.rstrip('\n')
+				line_int = int(line_int)
+				seg_second = line_int
+			elif i > 10:
 				break
 
 		Aline_x = array('d')
@@ -93,11 +105,9 @@ if len(sys.argv) == 2:
 		plt.plot(Qprim_x, Qprim_y, 'ko')
 		plt.plot(Qline_x, Qline_y, 'k-')
 
-#	if plot != 0 and frame_no == plot:
-#		plt.plot(x[seg_first-k], y[seg_first-k], 'yo')
-
-#	if plot != 0 and frame_no == plot:
-#		plt.plot(x[seg_second+k], y[seg_second+k], 'yo')
+		for k in range(0, regress_neighborhood):
+			plt.plot(x[seg_first-k], y[seg_first-k], 'yo')
+			plt.plot(x[seg_second+k], y[seg_second+k], 'yo')
 
 #	if plot != 0 and frame_no == plot:
 

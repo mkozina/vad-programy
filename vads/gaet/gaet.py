@@ -171,6 +171,10 @@ if len(sys.argv) == 2:
 				x_regress.append( x[seg_second+k] )
 				y_regress.append( y[seg_second+k] )
 
+			plot_file.write("%i \n" % regress_neighborhood)
+			plot_file.write("%i \n" % seg_first)
+			plot_file.write("%i \n" % seg_second)
+
 			(slope, intercept, r_value, p_value, std_err) = stats.linregress(x_regress, y_regress)
 
 			# solve: y - ax = b
