@@ -103,10 +103,15 @@ if len(sys.argv) == 2:
 			Aprim_x = x[Aprim_value]
 			Aprim_y = y[Aprim_value]
 
+			plot_file.write("\n")
 			aAline = aline(A_x, A_y, Aprim_x, Aprim_y)
+			plot_file.write("%.15f \n" % aAline)
 			bAline = bline(A_x, A_y, Aprim_x, Aprim_y)
+			plot_file.write("%.15f \n" % bAline)
 			aBline = aline(B_x, B_y, Bprim_x, Bprim_y)
+			plot_file.write("%.15f \n" % aBline)
 			bBline = bline(B_x, B_y, Bprim_x, Bprim_y)
+			plot_file.write("%.15f \n" % bBline)
 
 			# solve: y - ax = b
 			a = np.array([[1,-aAline],[1,-aBline]])
@@ -116,10 +121,14 @@ if len(sys.argv) == 2:
 			except np.linalg.linalg.LinAlgError:
 				vad_decision.append( -1 )
 			Qprim_x = c[1]
+			plot_file.write("%.15f \n" % Qprim_x)
 			Qprim_y = c[0]
+			plot_file.write("%.15f \n" % Qprim_y)
 
 			aQline = aline(C_x, C_y, Qprim_x, Qprim_y)
+			plot_file.write("%.15f \n" % aQline)
 			bQline = bline(C_x, C_y, Qprim_x, Qprim_y)
+			plot_file.write("%.15f \n" % bQline)
 
 			seg_base = math.ceil(len(x)/2)
 			seg_first = 0

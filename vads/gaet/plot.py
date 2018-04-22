@@ -23,32 +23,75 @@ if len(sys.argv) == 2:
 	# x
 	x = array('I')
 	for i, line in enumerate(plot_file):
-		if i >= ((frame_no-1)*(N+1))+1 and i <= ((frame_no-1)*(N+1))+1+(N-1):
+		if i >= ((frame_no-1)*(N+1+27))+1 and i <= ((frame_no-1)*(N+1+27))+1+(N-1):
 			line_int = line.rstrip('\n')
-			line_int = int (line_int)
+			line_int = int(line_int)
 			x.append( line_int )
+		elif i > ((frame_no-1)*(N+1+27))+1+(N-1):
+			break
 
-#	if plot != 0 and frame_no == plot:
+	# lines that crosses A', B' and Q' points
 
-#		Aline_x = array('d')
-#		Aline_y = array('d')
-#		Bline_x = array('d')
-#		Bline_y = array('d')
-#		Qline_x = array('d')
-#		Qline_y = array('d')
+	B_x = x[0]
+	A_x = x[-1]
 
-#		for j in range(B_x, A_x+1):
-#			Aline_x.append( j )
-#			Aline_y.append( aAline*j + bAline )
-#			Bline_x.append( j )
-#			Bline_y.append( aBline*j + bBline )
-#			Qline_x.append( j )
-#			Qline_y.append( aQline*j + bQline )
+	for ii in range(1, 4):
 
-#		plt.plot(Aline_x, Aline_y, 'r-')
-#		plt.plot(Bline_x, Bline_y, 'g-')
-#		plt.plot(Qprim_x, Qprim_y, 'ko')
-#		plt.plot(Qline_x, Qline_y, 'k-')
+		for i, line in enumerate(plot_file):
+			if i == 0:
+				line_int = line.rstrip('\n')
+				line_int = float(line_int)
+				aAline = line_int
+			elif i == 1:
+				line_int = line.rstrip('\n')
+				line_int = float(line_int)
+				bAline = line_int
+			elif i == 2:
+				line_int = line.rstrip('\n')
+				line_int = float(line_int)
+				aBline = line_int
+			elif i == 3:
+				line_int = line.rstrip('\n')
+				line_int = float(line_int)
+				bBline = line_int
+			elif i == 4:
+				line_int = line.rstrip('\n')
+				line_int = float(line_int)
+				Qprim_x = line_int
+			elif i == 5:
+				line_int = line.rstrip('\n')
+				line_int = float(line_int)
+				Qprim_y = line_int
+			elif i == 6:
+				line_int = line.rstrip('\n')
+				line_int = float(line_int)
+				aQline = line_int
+			elif i == 7:
+				line_int = line.rstrip('\n')
+				line_int = float(line_int)
+				bQline = line_int
+			elif i > 7:
+				break
+
+		Aline_x = array('d')
+		Aline_y = array('d')
+		Bline_x = array('d')
+		Bline_y = array('d')
+		Qline_x = array('d')
+		Qline_y = array('d')
+
+		for j in range(B_x, A_x+1):
+			Aline_x.append( j )
+			Aline_y.append( aAline*j + bAline )
+			Bline_x.append( j )
+			Bline_y.append( aBline*j + bBline )
+			Qline_x.append( j )
+			Qline_y.append( aQline*j + bQline )
+
+		plt.plot(Aline_x, Aline_y, 'r-')
+		plt.plot(Bline_x, Bline_y, 'g-')
+		plt.plot(Qprim_x, Qprim_y, 'ko')
+		plt.plot(Qline_x, Qline_y, 'k-')
 
 #	if plot != 0 and frame_no == plot:
 #		plt.plot(x[seg_first-k], y[seg_first-k], 'yo')
@@ -70,9 +113,9 @@ if len(sys.argv) == 2:
 
 	# plot GAET
 	plt.scatter(x, y)
-#	plt.title("%s, frame: %i" % (filename, frame_no))
-#	mng = plt.get_current_fig_manager()
-#	mng.resize(*mng.window.maxsize())
+	plt.title("%s, frame: %i" % (filename, frame_no))
+	mng = plt.get_current_fig_manager()
+	mng.resize(*mng.window.maxsize())
 	plt.show()
 
 	# plot frame
