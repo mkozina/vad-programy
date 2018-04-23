@@ -53,16 +53,18 @@ if len(sys.argv) == 2:
 	# main loop over each frame
 	for i in range(0, len(signal[1]), 160):
 
-		frame_no += 1
-		s = str(frame_no)
-		s = s+"\n"
-		plot_file.write(s)
-
 		# Geometrically Adaptive Energy Threshold (GAET) Method
 
 		# Modified Amplitude Probability Distribution (MAPD)
 		y = np.arange(N) / (N-1)
 		x = np.sort( abs(signal_samples[i:i+N]) )
+		if len(x) < 400:
+			break
+
+		frame_no += 1
+		s = str(frame_no)
+		s = s+"\n"
+		plot_file.write(s)
 		for item in range(len(x)):
 			plot_file.write("%i \n" % x[item])
 

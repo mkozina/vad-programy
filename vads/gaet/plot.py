@@ -30,6 +30,10 @@ if len(sys.argv) == 2:
 		elif i > ((frame_no-1)*(N+1+48))+1+(N-1):
 			break
 
+	if len(x) < 400:
+		print("Such frame don't exist!")
+		sys.exit(0)
+
 	B_x = x[0]
 	A_x = x[-1]
 
