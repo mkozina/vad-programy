@@ -35,6 +35,8 @@ if len(sys.argv) == 2:
 
 	for ii in range(1, 4):
 
+		stop = "no"
+
 		for i, line in enumerate(plot_file):
 			if i == 0:
 				line_int = line.rstrip('\n')
@@ -70,32 +72,53 @@ if len(sys.argv) == 2:
 				bQline = line_int
 			elif i == 8:
 				line_int = line.rstrip('\n')
-				line_int = int(line_int)
-				regress_neighborhood = line_int
+				if "NaN" in line_int:
+					stop = "yes"
+				else:
+					line_int = int(line_int)
+					regress_neighborhood = line_int
 			elif i == 9:
 				line_int = line.rstrip('\n')
-				line_int = int(line_int)
-				seg_first = line_int
+				if "NaN" in line_int:
+					stop = "yes"
+				else:
+					line_int = int(line_int)
+					seg_first = line_int
 			elif i == 10:
 				line_int = line.rstrip('\n')
-				line_int = int(line_int)
-				seg_second = line_int
+				if "NaN" in line_int:
+					stop = "yes"
+				else:
+					line_int = int(line_int)
+					seg_second = line_int
 			elif i == 11:
 				line_int = line.rstrip('\n')
-				line_int = float(line_int)
-				slope = line_int
+				if "NaN" in line_int:
+					stop = "yes"
+				else:
+					line_int = float(line_int)
+					slope = line_int
 			elif i == 12:
 				line_int = line.rstrip('\n')
-				line_int = float(line_int)
-				intercept = line_int
+				if "NaN" in line_int:
+					stop = "yes"
+				else:
+					line_int = float(line_int)
+					intercept = line_int
 			elif i == 13:
 				line_int = line.rstrip('\n')
-				line_int = float(line_int)
-				Q_x = line_int
+				if "NaN" in line_int:
+					stop = "yes"
+				else:
+					line_int = float(line_int)
+					Q_x = line_int
 			elif i == 14:
 				line_int = line.rstrip('\n')
-				line_int = float(line_int)
-				Q_y = line_int
+				if "NaN" in line_int:
+					stop = "yes"
+				else:
+					line_int = float(line_int)
+					Q_y = line_int
 			elif i > 14:
 				break
 
@@ -120,6 +143,9 @@ if len(sys.argv) == 2:
 		plt.plot(Bline_x, Bline_y, 'g-')
 		plt.plot(Qprim_x, Qprim_y, 'ko')
 		plt.plot(Qline_x, Qline_y, 'k-')
+
+		if "yes" in stop:
+			continue
 
 		# linear regression and Q point
 

@@ -154,6 +154,16 @@ if len(sys.argv) == 2:
 				if seg_second > (N-1)-(regress_neighborhood-1):
 					Q_x.append( x[len(x)-1] )
 					Q_y.append( y[len(y)-1] )
+
+					# save unused values to maintain correct length of file
+					plot_file.write("NaN\n")
+					plot_file.write("NaN\n")
+					plot_file.write("NaN\n")
+					plot_file.write("NaN\n")
+					plot_file.write("NaN\n")
+					plot_file.write("NaN\n")
+					plot_file.write("NaN\n")
+
 					stop = "yes"
 					break
 
