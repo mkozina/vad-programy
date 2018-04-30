@@ -58,6 +58,8 @@ if len(sys.argv) == 3:
 	plt.show()
 
 	# plot noise level
+	axes = plt.gca()
+	axes.set_ylim([-0.04,1.04])
 	plt.plot(sample, noise_level_scaled, 'ro')
 	plt.ylabel("Amplitude")
 	plt.xlabel("Time (samples)")
