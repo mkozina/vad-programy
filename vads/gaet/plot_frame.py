@@ -203,16 +203,6 @@ if len(sys.argv) == 2:
 	mng.resize(*mng.window.maxsize())
 	plt.show()
 
-	# plot frame
-#	plt.plot(signal_samples[i:i+N])
-#	plt.axhline(y=noise_level[frame_no-1], color='m')
-#	plt.ylabel("Amplitude")
-#	plt.xlabel("Time (samples)")
-#	plt.title("%s, frame: %i" % (filename, frame_no))
-#	mng = plt.get_current_fig_manager()
-#	mng.resize(*mng.window.maxsize())
-#	plt.show()
-
 	plot_file.close()
 
 elif len(sys.argv) < 2:
