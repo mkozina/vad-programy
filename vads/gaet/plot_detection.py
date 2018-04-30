@@ -14,7 +14,14 @@ if len(sys.argv) == 3:
 	signal_samples = signal[1]
 	signal_samples = signal_samples.astype(np.int64)
 
+	# normalize plot data
 	ceiling = max(signal_samples)
+	floor = min(signal_samples)
+	ceiling2 = abs(floor)
+	if ceiling > ceiling2:
+		scale_param = ceiling
+	else:
+		scale_param = ceiling2
 
 	log = sys.argv[2]
 	vad_file = open(log, 'r')
@@ -38,10 +45,11 @@ if len(sys.argv) == 3:
 		elif i%4 == 3:
 			energy.append( int(line_int) )
 
-	vad_decision_signal = [i * ceiling for i in vad_decision]
+	signal_samples_scaled = [i / scale_param for i in signal_samples]
+	noise_level_scaled = [i / scale_param for i in noise_level]
 
 	# plot noisy speech
-	plt.plot(signal_samples)
+	plt.plot(signal_samples_scaled)
 	plt.ylabel("Amplitude")
 	plt.xlabel("Time (samples)")
 	plt.title("%s - noisy speech" % filename)
@@ -50,7 +58,7 @@ if len(sys.argv) == 3:
 	plt.show()
 
 	# plot noise level
-	plt.plot(sample, noise_level, 'ro')
+	plt.plot(sample, noise_level_scaled, 'ro')
 	plt.ylabel("Amplitude")
 	plt.xlabel("Time (samples)")
 	plt.title("%s - noise level" % filename)
@@ -68,9 +76,9 @@ if len(sys.argv) == 3:
 	plt.show()
 
 	# plot signal
-	plt.plot(signal_samples)
-	plt.plot(sample, noise_level, 'ro')
-	plt.plot(sample, vad_decision_signal, 'ko')
+	plt.plot(signal_samples_scaled)
+	plt.plot(sample, noise_level_scaled, 'ro')
+	plt.plot(sample, vad_decision, 'ko')
 	#plt.axhline(y=noise_level[frame_no-1], color='m')
 	plt.ylabel("Amplitude")
 	plt.xlabel("Time (samples)")
