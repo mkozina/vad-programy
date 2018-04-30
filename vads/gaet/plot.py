@@ -13,7 +13,7 @@ if len(sys.argv) == 2:
 	N = N.rstrip('\n')
 	N = int(N)
 
-	# frame no - ???1575??? - (starts from 1)
+	# frame no - (starts from 1)
 	frame_no = input('Plot frame: ')
 	frame_no = int(frame_no)
 

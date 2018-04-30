@@ -106,58 +106,130 @@ if len(sys.argv) == 2:
 			Aprim_y = y[Aprim_value]
 
 			plot_file.write("\n")
-			aAline = aline(A_x, A_y, Aprim_x, Aprim_y)
-			plot_file.write("%.15f \n" % aAline)
-			bAline = bline(A_x, A_y, Aprim_x, Aprim_y)
-			plot_file.write("%.15f \n" % bAline)
-			aBline = aline(B_x, B_y, Bprim_x, Bprim_y)
-			plot_file.write("%.15f \n" % aBline)
-			bBline = bline(B_x, B_y, Bprim_x, Bprim_y)
-			plot_file.write("%.15f \n" % bBline)
 
-			# solve: y - ax = b
-			a = np.array([[1,-aAline],[1,-aBline]])
-			b = np.array([bAline,bBline])
-			try:
-				c = linalg.solve(a,b)
-			except np.linalg.linalg.LinAlgError:
-				vad_decision.append( -1 )
-			Qprim_x = c[1]
-			plot_file.write("%.15f \n" % Qprim_x)
-			Qprim_y = c[0]
-			plot_file.write("%.15f \n" % Qprim_y)
+			if A_x != Aprim_x:
+				aAline = aline(A_x, A_y, Aprim_x, Aprim_y)
+				plot_file.write("%.15f \n" % aAline)
+				bAline = bline(A_x, A_y, Aprim_x, Aprim_y)
+				plot_file.write("%.15f \n" % bAline)
+				if B_x != Bprim_x:
+					aBline = aline(B_x, B_y, Bprim_x, Bprim_y)
+					plot_file.write("%.15f \n" % aBline)
+					bBline = bline(B_x, B_y, Bprim_x, Bprim_y)
+					plot_file.write("%.15f \n" % bBline)
 
-			aQline = aline(C_x, C_y, Qprim_x, Qprim_y)
-			plot_file.write("%.15f \n" % aQline)
-			bQline = bline(C_x, C_y, Qprim_x, Qprim_y)
-			plot_file.write("%.15f \n" % bQline)
+					# solve: y - ax = b
+					a = np.array([[1,-aAline],[1,-aBline]])
+					b = np.array([bAline,bBline])
+					try:
+						c = linalg.solve(a,b)
+					except np.linalg.linalg.LinAlgError:
+						Q_x.append( 0 )
+						plot_file.write("NaN\n")
+						plot_file.write("NaN\n")
+						plot_file.write("NaN\n")
+						plot_file.write("NaN\n")
+						plot_file.write("NaN\n")
+						plot_file.write("NaN\n")
+						plot_file.write("NaN\n")
+						plot_file.write("NaN\n")
+						plot_file.write("NaN\n")
+						plot_file.write("NaN\n")
+						plot_file.write("NaN\n")
+						continue
 
-			seg_base = math.ceil(len(x)/2)
-			seg_first = 0
-			seg_second = seg_base
-			prev_seg_first = -1
-			prev_seg_second = -1
+					Qprim_x = c[1]
+					plot_file.write("%.15f \n" % Qprim_x)
+					Qprim_y = c[0]
+					plot_file.write("%.15f \n" % Qprim_y)
 
-			while (seg_first != prev_seg_first) or (seg_second != prev_seg_second):
+					if C_x != Qprim_x:
+						aQline = aline(C_x, C_y, Qprim_x, Qprim_y)
+						plot_file.write("%.15f \n" % aQline)
+						bQline = bline(C_x, C_y, Qprim_x, Qprim_y)
+						plot_file.write("%.15f \n" % bQline)
 
-				firstQ = aQline*x[seg_first] + bQline
-				secondQ = aQline*x[seg_second] + bQline
+						seg_base = math.ceil(len(x)/2)
+						seg_first = 0
+						seg_second = seg_base
+						prev_seg_first = -1
+						prev_seg_second = -1
 
-				prev_seg_first = seg_first
-				prev_seg_second =	seg_second
-				seg_base = math.ceil(seg_base/2)
+						while (seg_first != prev_seg_first) or (seg_second != prev_seg_second):
 
-				if y[seg_first] <= firstQ and y[seg_second] <= secondQ:
-					seg_first = seg_second
-					seg_second = seg_second + seg_base
-				elif y[seg_first] <= firstQ and y[seg_second] > secondQ:
-					seg_second = seg_first + seg_base
+							firstQ = aQline*x[seg_first] + bQline
+							secondQ = aQline*x[seg_second] + bQline
 
-				if seg_second > (N-1)-(regress_neighborhood-1):
-					Q_x.append( x[len(x)-1] )
-					Q_y.append( y[len(y)-1] )
+							prev_seg_first = seg_first
+							prev_seg_second =	seg_second
+							seg_base = math.ceil(seg_base/2)
 
-					# save unused values to maintain correct length of file
+							if y[seg_first] <= firstQ and y[seg_second] <= secondQ:
+								seg_first = seg_second
+								seg_second = seg_second + seg_base
+							elif y[seg_first] <= firstQ and y[seg_second] > secondQ:
+								seg_second = seg_first + seg_base
+
+							if seg_second > (N-1)-(regress_neighborhood-1):
+								Q_x.append( x[len(x)-1] )
+								Q_y.append( y[len(y)-1] )
+
+								# save unused values to maintain correct length of file
+								plot_file.write("NaN\n")
+								plot_file.write("NaN\n")
+								plot_file.write("NaN\n")
+								plot_file.write("NaN\n")
+								plot_file.write("NaN\n")
+								plot_file.write("NaN\n")
+								plot_file.write("NaN\n")
+
+								stop = "yes"
+								break
+
+						if "yes" in stop:
+							continue
+
+						x_regress = array('d')
+						y_regress = array('d')
+
+						for k in range(0, regress_neighborhood):
+							x_regress.append( x[seg_first-k] )
+							y_regress.append( y[seg_first-k] )
+
+						for k in range(0, regress_neighborhood):
+							x_regress.append( x[seg_second+k] )
+							y_regress.append( y[seg_second+k] )
+
+						plot_file.write("%i \n" % regress_neighborhood)
+						plot_file.write("%i \n" % seg_first)
+						plot_file.write("%i \n" % seg_second)
+
+						(slope, intercept, r_value, p_value, std_err) = stats.linregress(x_regress, y_regress)
+
+						# solve: y - ax = b
+						a = np.array([[1,-aQline],[1,-slope]])
+						b = np.array([bQline,intercept])
+						c = linalg.solve(a,b)
+						Q_x.append( c[1] )
+						Q_y.append( c[0] )
+
+						plot_file.write("%.15f \n" % slope)
+						plot_file.write("%.15f \n" % intercept)
+						plot_file.write("%.15f \n" % c[1])
+						plot_file.write("%.15f \n" % c[0])
+
+					else:
+						plot_file.write("NaN\n")
+						plot_file.write("NaN\n")
+						plot_file.write("NaN\n")
+						plot_file.write("NaN\n")
+						plot_file.write("NaN\n")
+						plot_file.write("NaN\n")
+						plot_file.write("NaN\n")
+						plot_file.write("NaN\n")
+						plot_file.write("NaN\n")
+
+				else:
 					plot_file.write("NaN\n")
 					plot_file.write("NaN\n")
 					plot_file.write("NaN\n")
@@ -165,46 +237,37 @@ if len(sys.argv) == 2:
 					plot_file.write("NaN\n")
 					plot_file.write("NaN\n")
 					plot_file.write("NaN\n")
+					plot_file.write("NaN\n")
+					plot_file.write("NaN\n")
+					plot_file.write("NaN\n")
+					plot_file.write("NaN\n")
+					plot_file.write("NaN\n")
+					plot_file.write("NaN\n")
 
-					stop = "yes"
-					break
-
-			if "yes" in stop:
-				continue
-
-			x_regress = array('d')
-			y_regress = array('d')
-
-			for k in range(0, regress_neighborhood):
-				x_regress.append( x[seg_first-k] )
-				y_regress.append( y[seg_first-k] )
-
-			for k in range(0, regress_neighborhood):
-				x_regress.append( x[seg_second+k] )
-				y_regress.append( y[seg_second+k] )
-
-			plot_file.write("%i \n" % regress_neighborhood)
-			plot_file.write("%i \n" % seg_first)
-			plot_file.write("%i \n" % seg_second)
-
-			(slope, intercept, r_value, p_value, std_err) = stats.linregress(x_regress, y_regress)
-
-			# solve: y - ax = b
-			a = np.array([[1,-aQline],[1,-slope]])
-			b = np.array([bQline,intercept])
-			c = linalg.solve(a,b)
-			Q_x.append( c[1] )
-			Q_y.append( c[0] )
-
-			plot_file.write("%.15f \n" % slope)
-			plot_file.write("%.15f \n" % intercept)
-			plot_file.write("%.15f \n" % c[1])
-			plot_file.write("%.15f \n" % c[0])
+			else:
+				plot_file.write("NaN\n")
+				plot_file.write("NaN\n")
+				plot_file.write("NaN\n")
+				plot_file.write("NaN\n")
+				plot_file.write("NaN\n")
+				plot_file.write("NaN\n")
+				plot_file.write("NaN\n")
+				plot_file.write("NaN\n")
+				plot_file.write("NaN\n")
+				plot_file.write("NaN\n")
+				plot_file.write("NaN\n")
+				plot_file.write("NaN\n")
+				plot_file.write("NaN\n")
+				plot_file.write("NaN\n")
+				plot_file.write("NaN\n")
 
 		#safety coefficient (0.8 < alpha < 1.2)
 		alpha = 1
 
-		noise_level.append( alpha*((Q_x[0]+Q_x[1]+Q_x[2])/3) )
+		Q_av = 0
+		for a in Q_x:
+			Q_av = Q_av + a
+		noise_level.append( alpha*(Q_av/len(Q_x)) )
 
 		vad_decision.append( 0 )
 		for m in range(0, N):
