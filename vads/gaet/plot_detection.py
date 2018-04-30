@@ -40,21 +40,39 @@ if len(sys.argv) == 3:
 
 	vad_decision_signal = [i * ceiling for i in vad_decision]
 
-	# plot frame
+	# plot noisy speech
 	plt.plot(signal_samples)
-	plt.plot(sample, noise_level, 'ro')
-	plt.plot(sample, vad_decision_signal, 'ko')
-	#plt.axhline(y=noise_level[frame_no-1], color='m')
 	plt.ylabel("Amplitude")
 	plt.xlabel("Time (samples)")
-	plt.title("%s" % filename)
+	plt.title("%s - noisy speech" % filename)
+	mng = plt.get_current_fig_manager()
+	mng.resize(*mng.window.maxsize())
+	plt.show()
+
+	# plot noise level
+	plt.plot(sample, noise_level, 'ro')
+	plt.ylabel("Amplitude")
+	plt.xlabel("Time (samples)")
+	plt.title("%s - noise level" % filename)
 	mng = plt.get_current_fig_manager()
 	mng.resize(*mng.window.maxsize())
 	plt.show()
 
 	# plot soft detection
-	plt.plot(sample, vad_decision, 'ro')
+	plt.plot(sample, vad_decision, 'ko')
 	plt.ylabel("Decision")
+	plt.xlabel("Time (samples)")
+	plt.title("%s - soft detection" % filename)
+	mng = plt.get_current_fig_manager()
+	mng.resize(*mng.window.maxsize())
+	plt.show()
+
+	# plot signal
+	plt.plot(signal_samples)
+	plt.plot(sample, noise_level, 'ro')
+	plt.plot(sample, vad_decision_signal, 'ko')
+	#plt.axhline(y=noise_level[frame_no-1], color='m')
+	plt.ylabel("Amplitude")
 	plt.xlabel("Time (samples)")
 	plt.title("%s" % filename)
 	mng = plt.get_current_fig_manager()
