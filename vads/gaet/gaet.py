@@ -290,7 +290,9 @@ if len(sys.argv) == 2:
 
 		# energy detector
 		# calculate energy of a frame
-		energy.append( sum(np.square(signal_samples[i:i+N])) )
+		energy.append( sum(np.square( abs(signal_samples[i:i+N]) )) )
+
+		vad_file.write("%i \n" % energy[frame_no-1])
 
 	plot_file.close()
 	vad_file.close()
