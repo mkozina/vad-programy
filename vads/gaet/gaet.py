@@ -27,9 +27,11 @@ if len(sys.argv) == 2:
 	signal_samples = signal[1]
 	signal_samples = signal_samples.astype(np.int64)
 
-	# write plotting data to file
-	filename = filename+".txt"
-	plot_file = open(filename, 'w')
+	# write plotting data to files
+	filename1 = filename+".frame.txt"
+	plot_file = open(filename1, 'w')
+	filename2 = filename+".detection.txt"
+	vad_file = open(filename2, 'w')
 
 	# frame size: 400 samples
 	# overlapping 15ms (240 samples)
@@ -67,6 +69,8 @@ if len(sys.argv) == 2:
 		plot_file.write(s)
 		for item in range(len(x)):
 			plot_file.write("%i \n" % x[item])
+
+		vad_file.write("%i \n" % i)
 
 		# set point B to bottom left corner
 		B_x = x[0]
@@ -269,6 +273,8 @@ if len(sys.argv) == 2:
 			Q_av = Q_av + a
 		noise_level.append( alpha*(Q_av/len(Q_x)) )
 
+		vad_file.write("%.15f \n" % noise_level[frame_no-1])
+
 		vad_decision.append( 0 )
 		for m in range(0, N):
 			if x[m] > noise_level[frame_no-1]:
@@ -280,14 +286,14 @@ if len(sys.argv) == 2:
 		else:
 			vad_decision[frame_no-1] = 0
 
-		print(frame_no)
-		print(vad_decision[frame_no-1])
+		vad_file.write("%i \n" % vad_decision[frame_no-1])
 
 		# energy detector
 		# calculate energy of a frame
 		energy.append( sum(np.square(signal_samples[i:i+N])) )
 
 	plot_file.close()
+	vad_file.close()
 
 elif len(sys.argv) < 2:
 	print("You must enter filename as parameter!")
