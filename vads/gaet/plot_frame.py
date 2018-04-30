@@ -44,36 +44,60 @@ if len(sys.argv) == 2:
 		for i, line in enumerate(plot_file):
 			if i == 0:
 				line_int = line.rstrip('\n')
-				line_int = float(line_int)
-				aAline = line_int
+				if "NaN" in line_int:
+					stop = "yes"
+				else:
+					line_int = float(line_int)
+					aAline = line_int
 			elif i == 1:
 				line_int = line.rstrip('\n')
-				line_int = float(line_int)
-				bAline = line_int
+				if "NaN" in line_int:
+					stop = "yes"
+				else:
+					line_int = float(line_int)
+					bAline = line_int
 			elif i == 2:
 				line_int = line.rstrip('\n')
-				line_int = float(line_int)
-				aBline = line_int
+				if "NaN" in line_int:
+					stop = "yes"
+				else:
+					line_int = float(line_int)
+					aBline = line_int
 			elif i == 3:
 				line_int = line.rstrip('\n')
-				line_int = float(line_int)
-				bBline = line_int
+				if "NaN" in line_int:
+					stop = "yes"
+				else:
+					line_int = float(line_int)
+					bBline = line_int
 			elif i == 4:
 				line_int = line.rstrip('\n')
-				line_int = float(line_int)
-				Qprim_x = line_int
+				if "NaN" in line_int:
+					stop = "yes"
+				else:
+					line_int = float(line_int)
+					Qprim_x = line_int
 			elif i == 5:
 				line_int = line.rstrip('\n')
-				line_int = float(line_int)
-				Qprim_y = line_int
+				if "NaN" in line_int:
+					stop = "yes"
+				else:
+					line_int = float(line_int)
+					Qprim_y = line_int
 			elif i == 6:
 				line_int = line.rstrip('\n')
-				line_int = float(line_int)
-				aQline = line_int
+				if "NaN" in line_int:
+					stop = "yes"
+				else:
+					line_int = float(line_int)
+					aQline = line_int
 			elif i == 7:
 				line_int = line.rstrip('\n')
-				line_int = float(line_int)
-				bQline = line_int
+				if "NaN" in line_int:
+					stop = "yes"
+				else:
+					line_int = float(line_int)
+					bQline = line_int
 			elif i == 8:
 				line_int = line.rstrip('\n')
 				if "NaN" in line_int:

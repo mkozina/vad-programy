@@ -35,4 +35,4 @@ Requirements:
 
 Run `python3 gaet.py audiofile.wav` in `vads/gaet/`
 
-To see plots run `python3 plot.py plotfile.txt` in `vads/gaet/`
+To see plot of MAPD and GAET of specific frame run `python3 plot_frame.py plotfile.txt` in `vads/gaet/`
