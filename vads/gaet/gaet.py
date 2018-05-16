@@ -213,7 +213,15 @@ if len(sys.argv) == 2:
 						# solve: y - ax = b
 						a = np.array([[1,-aQline],[1,-slope]])
 						b = np.array([bQline,intercept])
-						c = linalg.solve(a,b)
+						try:
+							c = linalg.solve(a,b)
+						except ValueError:
+							Q_x.append( x[seg_first] )
+							plot_file.write("NaN\n")
+							plot_file.write("NaN\n")
+							plot_file.write("NaN\n")
+							plot_file.write("NaN\n")
+							continue
 						Q_x.append( c[1] )
 						Q_y.append( c[0] )
 
