@@ -199,8 +199,6 @@ if len(sys.argv) == 2:
 	# plot GAET
 	plt.scatter(x, y)
 	plt.title("%s, frame: %i" % (filename, frame_no))
-	mng = plt.get_current_fig_manager()
-	mng.resize(*mng.window.maxsize())
 	plt.show()
 
 	plot_file.close()

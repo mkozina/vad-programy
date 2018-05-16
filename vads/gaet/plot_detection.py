@@ -53,8 +53,6 @@ if len(sys.argv) == 3:
 	plt.ylabel("Amplitude")
 	plt.xlabel("Time (samples)")
 	plt.title("%s - noisy speech" % filename)
-	mng = plt.get_current_fig_manager()
-	mng.resize(*mng.window.maxsize())
 	plt.show()
 
 	# plot noise level
@@ -64,8 +62,6 @@ if len(sys.argv) == 3:
 	plt.ylabel("Amplitude")
 	plt.xlabel("Time (samples)")
 	plt.title("%s - noise level" % filename)
-	mng = plt.get_current_fig_manager()
-	mng.resize(*mng.window.maxsize())
 	plt.show()
 
 	# plot soft detection
@@ -73,8 +69,6 @@ if len(sys.argv) == 3:
 	plt.ylabel("Decision")
 	plt.xlabel("Time (samples)")
 	plt.title("%s - soft detection" % filename)
-	mng = plt.get_current_fig_manager()
-	mng.resize(*mng.window.maxsize())
 	plt.show()
 
 	# plot signal
@@ -85,8 +79,6 @@ if len(sys.argv) == 3:
 	plt.ylabel("Amplitude")
 	plt.xlabel("Time (samples)")
 	plt.title("%s" % filename)
-	mng = plt.get_current_fig_manager()
-	mng.resize(*mng.window.maxsize())
 	plt.show()
 
 	vad_file.close()
