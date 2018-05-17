@@ -35,4 +35,6 @@ Requirements:
 
 Run `python3 gaet.py audiofile.wav` in `vads/gaet/`
 
-To see plot of MAPD and GAET of specific frame run `python3 plot_frame.py plotfile.txt` in `vads/gaet/`
+To see plot of MAPD and GAET of specific frame run `python3 plot_frame.py plotfile.frame.txt` in `vads/gaet/`
+
+To see plots of signal, noise level estimation and voice-active decision run `python3 plot_detection.py audiofile.wav plotfile.detection.txt` in `vads/gaet/`
