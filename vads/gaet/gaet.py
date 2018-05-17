@@ -5,6 +5,7 @@ import numpy as np
 from scipy.io.wavfile import read
 from scipy import stats
 import scipy.linalg as linalg
+import warnings
 
 # calculate coefficient a of a linear function that passes through (x1,y1) and (x2,y2)
 def aline(x1, y1, x2, y2):
@@ -208,7 +209,9 @@ if len(sys.argv) == 2:
 						plot_file.write("%i \n" % seg_first)
 						plot_file.write("%i \n" % seg_second)
 
-						(slope, intercept, r_value, p_value, std_err) = stats.linregress(x_regress, y_regress)
+						with warnings.catch_warnings():
+							warnings.simplefilter("ignore", RuntimeWarning)
+							(slope, intercept, r_value, p_value, std_err) = stats.linregress(x_regress, y_regress)
 
 						# solve: y - ax = b
 						a = np.array([[1,-aQline],[1,-slope]])
