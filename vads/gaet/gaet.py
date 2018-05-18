@@ -28,6 +28,19 @@ if len(sys.argv) == 2:
 	signal_samples = signal[1]
 	signal_samples = signal_samples.astype(np.int64)
 
+	# normalize signal samples
+	ceiling = max(signal_samples)
+	floor = min(signal_samples)
+	ceiling2 = abs(floor)
+	if ceiling > ceiling2:
+		scale_param = ceiling
+	else:
+		scale_param = ceiling2
+
+	signal_samples_scaled = array('d')
+	for i in signal_samples:
+		signal_samples_scaled.append(i / scale_param)
+
 	# write plotting data to files
 	filename1 = filename+".frame.txt"
 	plot_file = open(filename1, 'w')
@@ -61,6 +74,7 @@ if len(sys.argv) == 2:
 		# Modified Amplitude Probability Distribution (MAPD)
 		y = np.arange(N) / (N-1)
 		x = np.sort( abs(signal_samples[i:i+N]) )
+		x_signal = np.sort( signal_samples[i:i+N] )
 		if len(x) < 400:
 			break
 
@@ -288,7 +302,7 @@ if len(sys.argv) == 2:
 
 		vad_decision.append( 0 )
 		for m in range(0, N):
-			if x[m] > noise_level[frame_no-1]:
+			if x_signal[m] > noise_level[frame_no-1]:
 				vad_decision[frame_no-1] += 1
 
 		vad_decision[frame_no-1] /= N
@@ -301,7 +315,7 @@ if len(sys.argv) == 2:
 
 		# energy detector
 		# calculate energy of a frame
-		energy.append( sum(np.square( abs(signal_samples[i:i+N]) )) )
+		energy.append( sum(np.square( np.abs(signal_samples_scaled[i:i+N]) )) )
 
 		vad_file.write("%i \n" % energy[frame_no-1])
 
