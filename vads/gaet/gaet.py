@@ -7,6 +7,10 @@ from scipy import stats
 import scipy.linalg as linalg
 import warnings
 
+# Hanning window
+def w(n,N):
+	return 0.5*(1-cos((2*pi*n)/(N-1)));
+
 # calculate coefficient a of a linear function that passes through (x1,y1) and (x2,y2)
 def aline(x1, y1, x2, y2):
 	a = (y2-y1)/(x2-x1)
@@ -317,8 +321,8 @@ if len(sys.argv) == 2:
 		vad_file.write("%i \n" % vad_decision[block_no-1])
 
 		# energy detector
-		# calculate energy of a frame
-		energy.append( sum(np.square( signal_samples_scaled[i:i+B] ))/B )
+		# calculate energy of a block
+		energy.append( sum(np.square( signal_samples[i:i+B] ))/B )
 
 		vad_file.write("%i \n" % energy[block_no-1])
 
