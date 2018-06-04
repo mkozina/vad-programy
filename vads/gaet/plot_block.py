@@ -8,30 +8,30 @@ if len(sys.argv) == 2:
 	filename = sys.argv[1]
 	plot_file = open(filename, 'r')
 
-	# frame size
-	N = plot_file.readline()
-	N = N.rstrip('\n')
-	N = int(N)
+	# block size
+	B = plot_file.readline()
+	B = B.rstrip('\n')
+	B = int(B)
 
-	# frame no - (starts from 1)
-	frame_no = input('Plot frame: ')
-	frame_no = int(frame_no)
+	# block no - (starts from 1)
+	block_no = input('Plot block: ')
+	block_no = int(block_no)
 
 	# y
-	y = np.arange(N) / (N-1)
+	y = np.arange(B) / (B-1)
 
 	# x
 	x = array('I')
 	for i, line in enumerate(plot_file):
-		if i >= ((frame_no-1)*(N+1+48))+1 and i <= ((frame_no-1)*(N+1+48))+1+(N-1):
+		if i >= ((block_no-1)*(B+1+48))+1 and i <= ((block_no-1)*(B+1+48))+1+(B-1):
 			line_int = line.rstrip('\n')
 			line_int = int(line_int)
 			x.append( line_int )
-		elif i > ((frame_no-1)*(N+1+48))+1+(N-1):
+		elif i > ((block_no-1)*(B+1+48))+1+(B-1):
 			break
 
-	if len(x) < 400:
-		print("Such frame don't exist!")
+	if len(x) < B:
+		print("Such block don't exist!")
 		sys.exit(0)
 
 	B_x = x[0]
@@ -198,7 +198,7 @@ if len(sys.argv) == 2:
 
 	# plot GAET
 	plt.scatter(x, y)
-	plt.title("%s, frame: %i" % (filename, frame_no))
+	plt.title("%s, block: %i" % (filename, block_no))
 	plt.show()
 
 	plot_file.close()

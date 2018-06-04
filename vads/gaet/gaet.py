@@ -42,44 +42,47 @@ if len(sys.argv) == 2:
 		signal_samples_scaled.append(i / scale_param)
 
 	# write plotting data to files
-	filename1 = filename+".frame.txt"
+	filename1 = filename+".block.txt"
 	plot_file = open(filename1, 'w')
 	filename2 = filename+".detection.txt"
 	vad_file = open(filename2, 'w')
 
-	# frame size: 400 samples
-	# overlapping 15ms (240 samples)
-	N = 400
-	s = str(N)
+	# block size: 75 frames * 160 samples
+	B = 12000
+	s = str(B)
 	s = s+"\n"
 	plot_file.write(s)
 
+	# frame size: 400 samples
+	# overlapping 15ms (240 samples)
+	N = 400
+
 	regress_neighborhood = 6
 
-	# frame number (starts from 1)
-	frame_no = 0
+	# block number (starts from 1)
+	block_no = 0
 
-	# energy of each frame
+	# energy of each block
 	energy = array('d')
-	# noise level of each frame
+	# noise level of each block
 	noise_level = array('d')
 	# voice-active decision for each frame
 	vad_decision = array('d')
 
-	# main loop over each frame
-	for i in range(0, len(signal[1]), 160):
+	# main loop over each block
+	for i in range(0, len(signal[1]), 12000):
 
 		# Geometrically Adaptive Energy Threshold (GAET) Method
 
 		# Modified Amplitude Probability Distribution (MAPD)
-		y = np.arange(N) / (N-1)
-		x = np.sort( abs(signal_samples[i:i+N]) )
-		x_signal = np.sort( signal_samples[i:i+N] )
-		if len(x) < 400:
+		y = np.arange(B) / (B-1)
+		x = np.sort( abs(signal_samples[i:i+B]) )
+		x_signal = np.sort( signal_samples[i:i+B] )
+		if len(x) < B:
 			break
 
-		frame_no += 1
-		s = str(frame_no)
+		block_no += 1
+		s = str(block_no)
 		s = s+"\n"
 		plot_file.write(s)
 		for item in range(len(x)):
@@ -110,14 +113,14 @@ if len(sys.argv) == 2:
 			# these values are observed to be not very critical
 
 			if ii == 1:
-				Bprim_value = round((N-1)/5)
-				Aprim_value = round(4*((N-1)/5))
+				Bprim_value = round((B-1)/5)
+				Aprim_value = round(4*((B-1)/5))
 			elif ii == 2:
-				Bprim_value = round((N-1)/10)
-				Aprim_value = round(9*((N-1)/10))
+				Bprim_value = round((B-1)/10)
+				Aprim_value = round(9*((B-1)/10))
 			elif ii == 3:
-				Bprim_value = round((N-1)/20)
-				Aprim_value = round(19*((N-1)/20))
+				Bprim_value = round((B-1)/20)
+				Aprim_value = round(19*((B-1)/20))
 
 			Bprim_x = x[Bprim_value]
 			Bprim_y = y[Bprim_value]
@@ -298,26 +301,26 @@ if len(sys.argv) == 2:
 			Q_av = Q_av + a
 		noise_level.append( alpha*(Q_av/len(Q_x)) )
 
-		vad_file.write("%.15f \n" % noise_level[frame_no-1])
+		vad_file.write("%.15f \n" % noise_level[block_no-1])
 
 		vad_decision.append( 0 )
-		for m in range(0, N):
-			if x[m] > noise_level[frame_no-1]:
-				vad_decision[frame_no-1] += 1
+		for m in range(0, B):
+			if x[m] > noise_level[block_no-1]:
+				vad_decision[block_no-1] += 1
 
-		vad_decision[frame_no-1] /= N
-		if vad_decision[frame_no-1] > 0.5:
-			vad_decision[frame_no-1] = 1
+		vad_decision[block_no-1] /= B
+		if vad_decision[block_no-1] > 0.5:
+			vad_decision[block_no-1] = 1
 		else:
-			vad_decision[frame_no-1] = 0
+			vad_decision[block_no-1] = 0
 
-		vad_file.write("%i \n" % vad_decision[frame_no-1])
+		vad_file.write("%i \n" % vad_decision[block_no-1])
 
 		# energy detector
 		# calculate energy of a frame
-		energy.append( sum(np.square( signal_samples_scaled[i:i+N] ))/N )
+		energy.append( sum(np.square( signal_samples_scaled[i:i+B] ))/B )
 
-		vad_file.write("%i \n" % energy[frame_no-1])
+		vad_file.write("%i \n" % energy[block_no-1])
 
 	plot_file.close()
 	vad_file.close()

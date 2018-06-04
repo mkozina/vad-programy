@@ -18,9 +18,9 @@ if len(sys.argv) == 3:
 	vad_file = open(log, 'r')
 
 	sample = array('Q')
-	# energy of each frame
+	# energy of each block
 	energy = array('d')
-	# noise level of each frame
+	# noise level of each block
 	noise_level = array('d')
 	# voice-active decision for each frame
 	vad_decision = array('i')
@@ -47,6 +47,7 @@ if len(sys.argv) == 3:
 
 	signal_samples_scaled = [i / scale_param for i in signal_samples]
 	noise_level_scaled = [i / scale_param for i in noise_level]
+	energy_scaled = [i / scale_param for i in energy]
 
 	vad_signal = array('d')
 	i = 0
@@ -74,8 +75,9 @@ if len(sys.argv) == 3:
 
 	# plot noise level
 	axes = plt.gca()
-	axes.set_ylim([-0.04,1.04])
-	plt.plot(sample, noise_level_scaled, 'ro')
+	#axes.set_ylim([-0.04,1.04])
+	plt.plot(sample, noise_level, 'ro')
+	plt.plot(sample, energy, 'yo')
 	plt.ylabel("Amplitude")
 	plt.xlabel("Time (samples)")
 	plt.title("%s - noise level" % filename)
