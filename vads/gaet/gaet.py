@@ -50,14 +50,16 @@ if len(sys.argv) == 2:
 	plot_file = open(filename1, 'w')
 	filename2 = filename+".detection.txt"
 	vad_file = open(filename2, 'w')
+	filename3 = filename+".frame.txt"
+	frame_file = open(filename3, 'w')
 
-	# block size: 75 frames * 160 samples
+	# block size: 75 frames * 160 samples = 750ms
 	B = 12000
 	s = str(B)
 	s = s+"\n"
 	plot_file.write(s)
 
-	# frame size: 400 samples
+	# frame size: 25ms (400 samples)
 	# overlapping 15ms (240 samples)
 	N = 400
 
@@ -65,6 +67,8 @@ if len(sys.argv) == 2:
 
 	# block number (starts from 1)
 	block_no = 0
+	# frame number (starts from 1)
+	frame_no = 0
 
 	# energy of each block
 	energy = array('d')
@@ -81,7 +85,7 @@ if len(sys.argv) == 2:
 		# Modified Amplitude Probability Distribution (MAPD)
 		y = np.arange(B) / (B-1)
 		x = np.sort( abs(signal_samples[i:i+B]) )
-		x_signal = np.sort( signal_samples[i:i+B] )
+		x_frames = abs(signal_samples[i:i+B+240])
 		if len(x) < B:
 			break
 
@@ -307,27 +311,38 @@ if len(sys.argv) == 2:
 
 		vad_file.write("%.15f \n" % noise_level[block_no-1])
 
-		vad_decision.append( 0 )
-		for m in range(0, B):
-			if x[m] > noise_level[block_no-1]:
-				vad_decision[block_no-1] += 1
-
-		vad_decision[block_no-1] /= B
-		if vad_decision[block_no-1] > 0.5:
-			vad_decision[block_no-1] = 1
-		else:
-			vad_decision[block_no-1] = 0
-
-		vad_file.write("%i \n" % vad_decision[block_no-1])
-
 		# energy detector
 		# calculate energy of a block
 		energy.append( sum(np.square( signal_samples[i:i+B] ))/B )
 
 		vad_file.write("%i \n" % energy[block_no-1])
 
+		# frame counter (0 - 74)
+		frame_i = 0
+
+		while frame_i < 75:
+
+			frame_no += 1
+			vad_decision.append( 0 )
+			for m in range(frame_i*160, (frame_i*160)+N):
+				if x_frames[m] > noise_level[block_no-1]:
+					vad_decision[frame_no-1] += 1
+
+			vad_decision[frame_no-1] /= N
+			if vad_decision[frame_no-1] > 0.5:
+				vad_decision[frame_no-1] = 1
+			else:
+				vad_decision[frame_no-1] = 0
+
+			temp = (frame_no-1)*160
+			frame_file.write("%i \n" % temp)
+			frame_file.write("%i \n" % vad_decision[frame_no-1])
+
+			frame_i += 1
+
 	plot_file.close()
 	vad_file.close()
+	frame_file.close()
 
 elif len(sys.argv) < 2:
 	print("You must enter filename as parameter!")
