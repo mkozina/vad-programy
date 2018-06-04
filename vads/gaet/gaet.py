@@ -291,7 +291,7 @@ if len(sys.argv) == 2:
 				plot_file.write("NaN\n")
 
 		#safety coefficient (0.8 < alpha < 1.2)
-		alpha = 1
+		alpha = 0.8
 
 		Q_av = 0
 		for a in Q_x:
@@ -302,7 +302,7 @@ if len(sys.argv) == 2:
 
 		vad_decision.append( 0 )
 		for m in range(0, N):
-			if x_signal[m] > noise_level[frame_no-1]:
+			if x[m] > noise_level[frame_no-1]:
 				vad_decision[frame_no-1] += 1
 
 		vad_decision[frame_no-1] /= N
@@ -315,7 +315,7 @@ if len(sys.argv) == 2:
 
 		# energy detector
 		# calculate energy of a frame
-		energy.append( sum(np.square( np.abs(signal_samples_scaled[i:i+N]) )) )
+		energy.append( sum(np.square( signal_samples_scaled[i:i+N] ))/N )
 
 		vad_file.write("%i \n" % energy[frame_no-1])
 
