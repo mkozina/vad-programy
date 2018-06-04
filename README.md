@@ -37,6 +37,6 @@ Run `python3 gaet.py audiofile.wav` in `vads/gaet/`
 
 To see plot of MAPD and GAET of specific analysis block run `python3 plot_block.py plotfile.block.txt` in `vads/gaet/`
 
-To see plots of signal, noise level estimation and voice-active decision run `python3 plot_detection.py audiofile.wav plotfile.detection.txt` in `vads/gaet/`
+To see plots of signal, noise level estimation and voice-active decision run `python3 plot_detection.py audiofile.wav plotfile.detection.txt plotfile.frame.txt` in `vads/gaet/`
 
 To see plot of clear speech signal run `python3 plot_speech.py clearspeechfile.wav` in `vads/gaet/`
