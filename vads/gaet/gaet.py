@@ -70,7 +70,7 @@ if len(sys.argv) == 2:
 	vad_decision = array('d')
 
 	# main loop over each block
-	for i in range(0, len(signal[1]), 12000):
+	for i in range(0, len(signal[1]), B):
 
 		# Geometrically Adaptive Energy Threshold (GAET) Method
 
@@ -192,7 +192,7 @@ if len(sys.argv) == 2:
 							elif y[seg_first] <= firstQ and y[seg_second] > secondQ:
 								seg_second = seg_first + seg_base
 
-							if seg_second > (N-1)-(regress_neighborhood-1):
+							if seg_second > (B-1)-(regress_neighborhood-1):
 								Q_x.append( x[len(x)-1] )
 								Q_y.append( y[len(y)-1] )
 
