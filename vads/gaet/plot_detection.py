@@ -36,8 +36,6 @@ if len(sys.argv) == 4:
 			noise_level.append( float(line_int) )
 		elif i%3 == 2:
 			energy.append( int(line_int) )
-		#elif i%4 == 3:
-			#vad_decision.append( int(line_int) )
 
 	for i, line in enumerate(frame_file):
 		line_int = line.rstrip('\n')
@@ -103,7 +101,6 @@ if len(sys.argv) == 4:
 
 	# plot noise level
 	axes = plt.gca()
-	#axes.set_ylim([-0.04,1.04])
 	plt.plot(sample, noise_level_scaled, 'ro')
 	plt.plot(sample, energy_scaled, 'yo')
 	plt.ylabel("Amplitude")
@@ -118,11 +115,18 @@ if len(sys.argv) == 4:
 	plt.title("%s - vad signal" % filename)
 	plt.show()
 
-	# plot soft detection
-	#plt.plot(sample, vad_decision, 'ko')
+	# plot binary detection
+	plt.plot(sample_frame, vad_decision, 'ko')
+	plt.ylabel("Decision")
+	plt.xlabel("Time (samples)")
+	plt.title("%s - binary detection w/o post-processing" % filename)
+	plt.show()
+
+	# plot binary detection
+	#plt.plot(sample_frame, vad_decision, 'ko')
 	#plt.ylabel("Decision")
 	#plt.xlabel("Time (samples)")
-	#plt.title("%s - soft detection" % filename)
+	#plt.title("%s - binary detection w/ post-processing" % filename)
 	#plt.show()
 
 	# plot signal
@@ -130,7 +134,6 @@ if len(sys.argv) == 4:
 	plt.plot(sample, noise_level_scaled, 'ro')
 	plt.plot(sample, vad_signal_scaled, 'yo')
 	plt.plot(sample_frame, vad_decision, 'ko')
-	#plt.axhline(y=noise_level[frame_no-1], color='m')
 	plt.ylabel("Amplitude")
 	plt.xlabel("Time (samples)")
 	plt.title("%s" % filename)
