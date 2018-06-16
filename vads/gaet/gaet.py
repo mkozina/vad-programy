@@ -7,9 +7,9 @@ from scipy import stats
 import scipy.linalg as linalg
 import warnings
 
-# Hanning window
+# Hann window
 def w(n,N):
-	return 0.5*(1-cos((2*pi*n)/(N-1)));
+	return 0.5*(1-math.cos((2*math.pi*n)/(N-1)));
 
 # calculate coefficient a of a linear function that passes through (x1,y1) and (x2,y2)
 def aline(x1, y1, x2, y2):
@@ -84,7 +84,12 @@ if len(sys.argv) == 2:
 
 		# Modified Amplitude Probability Distribution (MAPD)
 		y = np.arange(B) / (B-1)
-		x = np.sort( abs(signal_samples[i:i+B]) )
+		x_signal = np.sort( abs(signal_samples[i:i+B]) )
+		x = array('d')
+		block_pos = 0
+		for sample in np.nditer(x_signal):
+			x.append( sample*w(block_pos,B) )
+			block_pos += 1
 		x_frames = abs(signal_samples[i:i+B+240])
 		if len(x) < B:
 			break
@@ -302,7 +307,7 @@ if len(sys.argv) == 2:
 				plot_file.write("NaN\n")
 
 		#safety coefficient (0.8 < alpha < 1.2)
-		alpha = 0.8
+		alpha = 0.85
 
 		Q_av = 0
 		for a in Q_x:
@@ -323,10 +328,12 @@ if len(sys.argv) == 2:
 		while frame_i < 75:
 
 			frame_no += 1
+			frame_pos = 0
 			vad_decision.append( 0 )
 			for m in range(frame_i*160, (frame_i*160)+N):
-				if x_frames[m] > noise_level[block_no-1]:
+				if (x_frames[m]*w(frame_pos,N)) > noise_level[block_no-1]:
 					vad_decision[frame_no-1] += 1
+				frame_pos += 1
 
 			vad_decision[frame_no-1] /= N
 			if vad_decision[frame_no-1] > 0.5:
