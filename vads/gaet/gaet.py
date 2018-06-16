@@ -32,19 +32,6 @@ if len(sys.argv) == 2:
 	signal_samples = signal[1]
 	signal_samples = signal_samples.astype(np.int64)
 
-	# normalize signal samples
-	ceiling = max(signal_samples)
-	floor = min(signal_samples)
-	ceiling2 = abs(floor)
-	if ceiling > ceiling2:
-		scale_param = ceiling
-	else:
-		scale_param = ceiling2
-
-	signal_samples_scaled = array('d')
-	for i in signal_samples:
-		signal_samples_scaled.append(i / scale_param)
-
 	# write plotting data to files
 	filename1 = filename+".block.txt"
 	plot_file = open(filename1, 'w')
@@ -53,8 +40,11 @@ if len(sys.argv) == 2:
 	filename3 = filename+".frame.txt"
 	frame_file = open(filename3, 'w')
 
-	# block size: 75 frames * 160 samples = 750ms
-	B = 12000
+	# block size in frames
+	F = 75
+
+	# block size: F frames * 160 samples = F * 10ms
+	B = F*160
 	s = str(B)
 	s = s+"\n"
 	plot_file.write(s)
@@ -84,15 +74,29 @@ if len(sys.argv) == 2:
 
 		# Modified Amplitude Probability Distribution (MAPD)
 		y = np.arange(B) / (B-1)
-		x_signal = np.sort( abs(signal_samples[i:i+B]) )
-		x = array('d')
+		x_signal = signal_samples[i:i+B]
+		x_hann = array('d')
 		block_pos = 0
 		for sample in np.nditer(x_signal):
-			x.append( sample*w(block_pos,B) )
+			x_hann.append( abs(sample*w(block_pos,B)) )
 			block_pos += 1
+		x = np.sort(x_hann)
 		x_frames = abs(signal_samples[i:i+B+240])
 		if len(x) < B:
 			break
+
+		# normalize signal samples
+		ceiling = max(x)
+		floor = min(x)
+		ceiling2 = abs(floor)
+		if ceiling > ceiling2:
+			scale_param = ceiling
+		else:
+			scale_param = ceiling2
+
+		x_frames_scaled = array('d')
+		for a in x_frames:
+			x_frames_scaled.append(a / scale_param)
 
 		block_no += 1
 		s = str(block_no)
@@ -307,12 +311,13 @@ if len(sys.argv) == 2:
 				plot_file.write("NaN\n")
 
 		#safety coefficient (0.8 < alpha < 1.2)
-		alpha = 0.85
+		alpha = 1.2
 
 		Q_av = 0
 		for a in Q_x:
 			Q_av = Q_av + a
-		noise_level.append( alpha*(Q_av/len(Q_x)) )
+		noise_lvl_avg = alpha*(Q_av/len(Q_x))
+		noise_level.append( noise_lvl_avg )
 
 		vad_file.write("%.15f \n" % noise_level[block_no-1])
 
@@ -322,10 +327,10 @@ if len(sys.argv) == 2:
 
 		vad_file.write("%i \n" % energy[block_no-1])
 
-		# frame counter (0 - 74)
+		# frame counter (0 - F-1)
 		frame_i = 0
 
-		while frame_i < 75:
+		while frame_i < F:
 
 			frame_no += 1
 			frame_pos = 0
