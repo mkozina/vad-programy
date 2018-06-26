@@ -60,8 +60,6 @@ if len(sys.argv) == 2:
 	# frame number (starts from 1)
 	frame_no = 0
 
-	# energy of each block
-	energy = array('d')
 	# noise level of each block
 	noise_level = array('d')
 	# voice-active decision for each frame
@@ -320,12 +318,6 @@ if len(sys.argv) == 2:
 		noise_level.append( noise_lvl_avg )
 
 		vad_file.write("%.15f \n" % noise_level[block_no-1])
-
-		# energy detector
-		# calculate energy of a block
-		energy.append( sum(np.square( signal_samples[i:i+B] ))/B )
-
-		vad_file.write("%i \n" % energy[block_no-1])
 
 		# frame counter (0 - F-1)
 		frame_i = 0
