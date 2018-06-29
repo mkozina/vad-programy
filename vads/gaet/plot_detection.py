@@ -59,7 +59,7 @@ if len(sys.argv) == 4:
 		noise_scale_param = ceiling2
 
 	signal_samples_scaled = [i / scale_param for i in signal_samples]
-	noise_level_scaled = [i / scale_param for i in noise_level]
+	noise_level_scaled = [i / noise_scale_param for i in noise_level]
 
 	# plot noisy speech
 	plt.plot(signal_samples_scaled)
