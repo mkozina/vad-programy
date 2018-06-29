@@ -149,7 +149,7 @@ do
 		vol=$(echo "$volamp $adjv" | awk '{printf "%.2f", 0.6*($2 / $1)}')
 		sox -v $vol $1/proc/$f $1/proc/$f-tempv.wav
 
-		sox $1/proc/$f-tempv.wav $1/proc/$f-temp.wav highpass 10
+		sox $1/proc/$f-tempv.wav $1/proc/$f-temp.wav highpass 80
 
 		stop=$(sox $1/proc/$f-temp.wav -n stat 2>&1 | grep 'Length' | cut -d':' -f2 | xargs | awk '{printf "%.2f", $1}')
 		stop=$(echo "$position $stop" | awk '{printf "%.2f", $1 + $2}')
@@ -213,7 +213,7 @@ do
 	vol=$(echo "$volamp $adjv" | awk '{printf "%.2f", 0.6*($2 / $1)}')
 	sox -v $vol $3/$f $3/$f-tempv.wav
 
-	sox $3/$f-tempv.wav $3/$f-temp.wav highpass 10
+	sox $3/$f-tempv.wav $3/$f-temp.wav highpass 80
 
 	rmsnoise=$(sox $3/$f-temp.wav -n stat 2>&1 | grep 'RMS     amplitude' | cut -d':' -f2 | xargs)
 	# Pnoise = Anoise^2
