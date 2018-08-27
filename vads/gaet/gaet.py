@@ -83,19 +83,6 @@ if len(sys.argv) == 2:
 		if len(x) < B:
 			break
 
-		# normalize signal samples
-		ceiling = max(x)
-		floor = min(x)
-		ceiling2 = abs(floor)
-		if ceiling > ceiling2:
-			scale_param = ceiling
-		else:
-			scale_param = ceiling2
-
-		x_frames_scaled = array('d')
-		for a in x_frames:
-			x_frames_scaled.append(a / scale_param)
-
 		block_no += 1
 		s = str(block_no)
 		s = s+"\n"
