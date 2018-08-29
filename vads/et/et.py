@@ -61,6 +61,15 @@ if len(sys.argv) == 3:
 		# calculate energy of a frame
 		energy = sum(np.square( x )/N)
 
+		k = 1
+		p = 0.2
+
+		if energy > k*energy_r:
+			vad_decision.append( 1 )
+		else:
+			vad_decision.append( 0 )
+			energy_r = ((1-p)*energy_r) + (p*energy)
+
 elif len(sys.argv) < 3:
 	print("You must enter noise and audio filenames as parameter!")
 else:
