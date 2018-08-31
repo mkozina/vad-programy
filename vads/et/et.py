@@ -68,7 +68,7 @@ if len(sys.argv) == 3:
 		# calculate energy of a frame
 		energy = sum(np.square( x )/N)
 
-		k = 1.2
+		k = 1.4
 		p = 0.2
 
 		if energy > k*energy_r:
@@ -77,6 +77,8 @@ if len(sys.argv) == 3:
 			vad_decision.append( 0 )
 			energy_r = ((1-p)*energy_r) + (p*energy)
 
+		temp = (frame_no-1)*160
+		vad_file.write("%i \n" % temp)
 		vad_file.write("%i \n" % vad_decision[frame_no-1])
 
 	vad_file.close()
