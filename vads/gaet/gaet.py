@@ -41,7 +41,7 @@ if len(sys.argv) == 2:
 	frame_file = open(filename3, 'w')
 
 	# block size in frames
-	F = 75
+	F = 50
 
 	# block size: F frames * 160 samples = F * 10ms
 	B = F*160
