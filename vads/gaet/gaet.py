@@ -80,7 +80,7 @@ if len(sys.argv) == 2:
 			block_pos += 1
 		x = np.sort(x_hann)
 		x_frames = abs(signal_samples[i:i+B+240])
-		if len(x) < B:
+		if len(x_frames) < (B+240):
 			break
 
 		block_no += 1
