@@ -40,3 +40,16 @@ To see plot of MAPD and GAET of specific analysis block run `python3 plot_block.
 To see plots of signal, noise level estimation and voice-active decision run `python3 plot_detection.py audiofile.wav plotfile.detection.txt plotfile.frame.txt` in `vads/gaet/`
 
 To see plot of clear speech signal run `python3 plot_speech.py clearspeechfile.wav` in `vads/gaet/`
+
+Energy Threshold Method
+----------------------------------------------
+
+Requirements:
+* Python 3.5.2
+* NumPy 1.13.1
+* SciPy 0.19.1
+* Matplotlib 2.0.2
+
+Run `python3 et.py samplenoise.wav audiofile.wav` in `vads/et/`
+
+To see plot of signal and voice-active decision run `python3 plot_detection.py audiofile.wav plotfile.detection.txt` in `vads/et/`
